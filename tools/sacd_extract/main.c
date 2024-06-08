@@ -250,7 +250,7 @@ static int parse_options(int argc, char *argv[])
             //opts.output_dsf = 0; 
             opts.output_iso = 1;
             break;
-		case 'w':
+        case 'w':
             //opts.concurrent = 1;  // do nothing. The program already makes all required operations in multiple steps
             break;	
         case 'c': opts.convert_dst = 1; break;
@@ -258,26 +258,26 @@ static int parse_options(int argc, char *argv[])
         case 'i': opts.input_device = strdup(optarg); break;
         case 'o':
         {
-			size_t n = strlen(optarg);
+            size_t n = strlen(optarg);
             if (n >= 2)
             {     				
-				// remove double quotes if exists (especially in Windows)
-				char * start_dir;
+                // remove double quotes if exists (especially in Windows)
+                char * start_dir;
                 if (optarg[0] ==  '\"' )
                 {  
-					start_dir=optarg + 1;
+                    start_dir=optarg + 1;
                     n =n-1;
                 }
-				else
-					start_dir=optarg;
-				if (start_dir[n - 1] ==  '\"' )  
-				  n = n-1;
-								 
+                else
+                    start_dir=optarg;
+                if (start_dir[n - 1] ==  '\"' )  
+                  n = n-1;
+                                 
                 // strip ending slash if exists
                 // if (start_dir[n - 1] == '\\' ||
                 //     start_dir[n - 1] == '/')
                 // {
-				// 	n=n-1;
+                // 	n=n-1;
                 // }
                 //opts.output_dir = strndup(start_dir, n - 1); //  strndup didn't exist in Windows
                 opts.output_dir = calloc(n+1, sizeof(char));
@@ -287,26 +287,26 @@ static int parse_options(int argc, char *argv[])
         }
         case 'y': 
         {
-			size_t n = strlen(optarg);
+            size_t n = strlen(optarg);
             if (n >= 2)
             {     				
-				// remove double quotes if exists (especially in Windows)
-				char * start_dir;
+                // remove double quotes if exists (especially in Windows)
+                char * start_dir;
                 if (optarg[0] ==  '\"' )
                 {
                     start_dir = optarg + 1;
                     n = n - 1;
                 }
                 else
-					start_dir=optarg;
-				if (start_dir[n - 1] ==  '\"' )  
-				  n = n-1;
-								 
+                    start_dir=optarg;
+                if (start_dir[n - 1] ==  '\"' )  
+                  n = n-1;
+                                 
                 // strip ending slash if exists
                 // if (start_dir[n - 1] == '\\' ||
                 //     start_dir[n - 1] == '/')
                 // {
-				// 	n=n-1;
+                // 	n=n-1;
                 // }
                 //opts.output_dir_conc = strndup(start_dir, n - 1); //  strndup didn't exist in Windows
                 opts.output_dir_conc = calloc(n+1, sizeof(char));
@@ -430,7 +430,7 @@ static void init(void)
 
 #if defined(WIN32) || defined(_WIN32)
     signal(SIGINT, handle_sigint);
-	
+    
 #else
     struct sigaction sa;
     memset(&sa, 0, sizeof(sa));
@@ -444,27 +444,27 @@ static void init(void)
 
 void print_start_time()
 {
-	started_processing = time(0);
-	wchar_t *wide_asctime;
-	CHAR2WCHAR(wide_asctime, asctime(localtime(&started_processing)));
-	fwprintf(stdout, L"\n Started at: %ls    \n", wide_asctime );
-	free(wide_asctime);
+    started_processing = time(0);
+    wchar_t *wide_asctime;
+    CHAR2WCHAR(wide_asctime, asctime(localtime(&started_processing)));
+    fwprintf(stdout, L"\n Started at: %ls    \n", wide_asctime );
+    free(wide_asctime);
 }
 void print_end_time()
 {
-	time_t ended_processing=time(0);
-	time_t seconds = difftime(ended_processing,started_processing);
+    time_t ended_processing=time(0);
+    time_t seconds = difftime(ended_processing,started_processing);
 
-	char elapsed_time[100];
-	strftime(elapsed_time, 90, "%H hours:%M minutes:%S seconds", gmtime(&seconds));
+    char elapsed_time[100];
+    strftime(elapsed_time, 90, "%H hours:%M minutes:%S seconds", gmtime(&seconds));
     wchar_t *wide_result_time, *wide_asctime;
     CHAR2WCHAR(wide_result_time, elapsed_time);
 
-	CHAR2WCHAR(wide_asctime, asctime(localtime(&ended_processing)));
+    CHAR2WCHAR(wide_asctime, asctime(localtime(&ended_processing)));
 
-	fwprintf(stdout, L"\n\n Ended at: %ls [elapsed: %ls]\n", wide_asctime, wide_result_time);
-	free(wide_result_time);
-	free(wide_asctime);	
+    fwprintf(stdout, L"\n\n Ended at: %ls [elapsed: %ls]\n", wide_asctime, wide_result_time);
+    free(wide_result_time);
+    free(wide_asctime);	
 }
 #if defined(WIN32) || defined(_WIN32)
 /*  Convert wide argv to UTF8   */
@@ -605,21 +605,21 @@ char PATH_TRAILING_SLASH[2]= {'\\','\0'};
 char PATH_TRAILING_SLASH[2] = {'/', '\0'};
 #endif
 
-	char *path_output;
+    char *path_output;
     char *album_path = get_path_disc_album(handle,opts.artist_flag);
-	
-	if(album_path==NULL)return NULL;
-	
-	if(base_output_dir !=NULL)
-	{
+    
+    if(album_path==NULL)return NULL;
+    
+    if(base_output_dir !=NULL)
+    {
       size_t size_base_output_dir =   strlen(base_output_dir);
       path_output = calloc(size_base_output_dir + 1 + strlen(album_path) + 20, sizeof(char));
       strncpy(path_output, base_output_dir, size_base_output_dir);
       if (base_output_dir[size_base_output_dir-1] != '/' && base_output_dir[size_base_output_dir-1] != '\\')
           strncat(path_output, PATH_TRAILING_SLASH, 1);
-	}
-	else
-	  path_output = calloc(strlen(album_path) + 20, sizeof(char));
+    }
+    else
+      path_output = calloc(strlen(album_path) + 20, sizeof(char));
 
     strncat(path_output, album_path, strlen(album_path));
     free(album_path);
@@ -697,7 +697,7 @@ char * return_current_directory()
     char *album_filename = NULL, *musicfilename = NULL, *file_path = NULL;
     int i, area_idx;
     sacd_reader_t *sacd_reader = NULL;
-	int exit_main_flag=0; //0=succes; -1 failed
+    int exit_main_flag=0; //0=succes; -1 failed
 
 #ifdef PTW32_STATIC_LIB
     pthread_win32_process_attach_np();
@@ -717,7 +717,7 @@ char * return_current_directory()
         if (fwide(stdout, 1) < 0)
         {
             fprintf(stderr, "\nERROR: Output not set to wide.\n");
-			exit_main_flag=-1;
+            exit_main_flag=-1;
             goto exit_main_1;
         }
         fwprintf(stdout, L"\nsacd_extract client " SACD_RIPPER_VERSION_STRING "\n");
@@ -786,14 +786,14 @@ char * return_current_directory()
                 fwprintf(stdout, L"%ls doesn't exist or is not a directory.\n",wide_filename);
                 free(wide_filename);
 
-				exit_main_flag=-1;
+                exit_main_flag=-1;
                 goto exit_main;
             }
             if (opts.output_dir_conc == NULL)
                 opts.output_dir_conc = strdup(opts.output_dir);
         }
-		
-		if (opts.output_dir_conc != NULL   ) // test if exists 
+        
+        if (opts.output_dir_conc != NULL   ) // test if exists 
         {
             if (path_dir_exists(opts.output_dir_conc) == 0)
             {
@@ -1076,11 +1076,11 @@ char * return_current_directory()
 
                             file_path = make_filename(NULL, NULL, album_filename, "dff");
 
-							int rez_cuesheet= write_cue_sheet(handle, file_path, area_idx, cue_file_path_unique);
-							if(rez_cuesheet != -1)
-								fwprintf(stdout, L"\n\n We are done exporting CUE sheet. \n");
-							else
-								fwprintf(stdout, L"\n\n ERROR: Cannot create CUE sheet file. \n");    
+                            int rez_cuesheet= write_cue_sheet(handle, file_path, area_idx, cue_file_path_unique);
+                            if(rez_cuesheet != -1)
+                                fwprintf(stdout, L"\n\n We are done exporting CUE sheet. \n");
+                            else
+                                fwprintf(stdout, L"\n\n ERROR: Cannot create CUE sheet file. \n");    
                             
                             free(cue_file_path_unique);
                             free(file_path);                                
@@ -1226,13 +1226,13 @@ char * return_current_directory()
                 scarletbook_close(handle);
 
             }  // end if handle
-			else
-				exit_main_flag=-1;
+            else
+                exit_main_flag=-1;
             
-			sacd_close(sacd_reader);
+            sacd_close(sacd_reader);
         }
-		else
-			exit_main_flag=-1;
+        else
+            exit_main_flag=-1;
 
         
 
@@ -1252,7 +1252,7 @@ exit_main_1:
 
     if (opts.output_dir != NULL) free(opts.output_dir);
 
-	if (opts.output_dir_conc != NULL) free(opts.output_dir_conc);
+    if (opts.output_dir_conc != NULL) free(opts.output_dir_conc);
 
     if (opts.input_device != NULL) free(opts.input_device);
 
@@ -1265,12 +1265,12 @@ exit_main_1:
     
 #if defined(WIN32) || defined(_WIN32)
      for (int t=0; t < argc;t++)
-	 {
-		 free(argvw_utf8[t]);		 
-	 }
-	 free(argvw_utf8);
-	 
+     {
+         free(argvw_utf8[t]);		 
+     }
+     free(argvw_utf8);
+     
 #endif
-	
+    
     return exit_main_flag;
 }
