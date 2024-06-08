@@ -600,33 +600,33 @@ int read_config()
 char *create_path_output(scarletbook_handle_t *handle, int area_idx, char * base_output_dir)
 {
 #if defined(WIN32) || defined(_WIN32)
-char PATH_TRAILING_SLASH[2]= {'\\','\0'};
+    char PATH_TRAILING_SLASH[2]= {'\\','\0'};
 #else
-char PATH_TRAILING_SLASH[2] = {'/', '\0'};
+    char PATH_TRAILING_SLASH[2] = {'/', '\0'};
 #endif
 
     char *path_output;
     char *album_path = get_path_disc_album(handle,opts.artist_flag);
-    
-    if(album_path==NULL)return NULL;
-    
-    if(base_output_dir !=NULL)
+
+    if (album_path == NULL) return NULL;
+
+    if (base_output_dir != NULL)
     {
-      size_t size_base_output_dir =   strlen(base_output_dir);
-      path_output = calloc(size_base_output_dir + 1 + strlen(album_path) + 20, sizeof(char));
-      strncpy(path_output, base_output_dir, size_base_output_dir);
-      if (base_output_dir[size_base_output_dir-1] != '/' && base_output_dir[size_base_output_dir-1] != '\\')
-          strncat(path_output, PATH_TRAILING_SLASH, 1);
+        size_t size_base_output_dir =   strlen(base_output_dir);
+        path_output = calloc(size_base_output_dir + 1 + strlen(album_path) + 20, sizeof(char));
+        strcpy(path_output, base_output_dir);
+        if (base_output_dir[size_base_output_dir-1] != '/' && base_output_dir[size_base_output_dir-1] != '\\')
+            strcat(path_output, PATH_TRAILING_SLASH);
     }
     else
-      path_output = calloc(strlen(album_path) + 20, sizeof(char));
+        path_output = calloc(strlen(album_path) + 20, sizeof(char));
 
-    strncat(path_output, album_path, strlen(album_path));
+    strcat(path_output, album_path);
     free(album_path);
 
     if (has_multi_channel(handle))
     {
-        strncat(path_output, PATH_TRAILING_SLASH, 1);
+        strcat(path_output, PATH_TRAILING_SLASH);
         strcat(path_output, get_speaker_config_string(handle->area[area_idx].area_toc));
     }
 
@@ -726,9 +726,9 @@ char * return_current_directory()
         char *buffer;
         if ((buffer = return_current_directory() ) != NULL)   
         {
-            char *wide_filename;
+            wchar_t *wide_filename;
             CHAR2WCHAR(wide_filename, buffer);
-            fwprintf(stdout, L"\nCurrent (working) directory (for the app and 'sacd_extract.cfg' file): %ls\n", (wchar_t *)wide_filename);
+            fwprintf(stdout, L"\nCurrent (working) directory (for the app and 'sacd_extract.cfg' file): %ls\n", wide_filename);
             free(wide_filename);
             free(buffer);
         }
@@ -864,14 +864,14 @@ char * return_current_directory()
                 {
                     size_t size_output_dir = strlen(opts.output_dir);
                     output_dir = calloc(size_output_dir + 1 + strlen(album_path) + 1, sizeof(char));
-                    strncpy(output_dir, opts.output_dir, size_output_dir);
+                    strcpy(output_dir, opts.output_dir);
                     if (opts.output_dir[size_output_dir - 1] != '/' && opts.output_dir[size_output_dir - 1] != '\\')
-                        strncat(output_dir, PATH_TRAILING_SLASH, 1);
+                        strcat(output_dir, PATH_TRAILING_SLASH);
                 }
                 else
                     output_dir = calloc(strlen(album_path) + 1, sizeof(char));
 
-                strncat(output_dir, album_path, strlen(album_path));
+                strcat(output_dir, album_path);
                 free(album_path);
                 LOG(lm_main, LOG_NOTICE, ("NOTICE in main: after get_path_disc_album()...output_dir: %s", output_dir));
 
@@ -882,12 +882,12 @@ char * return_current_directory()
 
                     if (ret_mkdir != 0)
                     {
+                        LOG(lm_main, LOG_ERROR, ("ERROR in main: exporting XML, after recursive_mkdir...output_dir: %s; ret=%d;", output_dir, ret_mkdir));
                         free(album_filename);
                         free(output_dir);
                         scarletbook_close(handle);
                         sacd_close(sacd_reader);
                         exit_main_flag = -1;
-                        LOG(lm_main, LOG_ERROR, ("ERROR in main: exporting XML, after recursive_mkdir...output_dir: %s; ret=%d;", output_dir, ret_mkdir));
                         goto exit_main;
                     }
 
@@ -936,12 +936,12 @@ char * return_current_directory()
 
                         if (ret_mkdir != 0)
                         {
+                            LOG(lm_main, LOG_ERROR, ("ERROR in main: ISO, after recursive_mkdir...output_dir: %s; ret=%d;", output_dir, ret_mkdir));
                             free(album_filename);
                             free(output_dir);
                             scarletbook_close(handle);
                             sacd_close(sacd_reader);
                             exit_main_flag=-1;
-                            LOG(lm_main, LOG_ERROR, ("ERROR in main: ISO, after recursive_mkdir...output_dir: %s; ret=%d;", output_dir, ret_mkdir));
                             goto exit_main;
                         }
                     }
